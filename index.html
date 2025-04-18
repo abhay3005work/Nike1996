@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Nike Air Jordan | Legend</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👟</text></svg>"
+    />
+
+    <!-- Load Three.js libraries directly with script tags -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/FontLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/geometries/TextGeometry.js"></script>
+
+    <!-- Striking fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Orbitron:wght@400;700;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      /* Reset and base styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        background: #000;
+        color: white;
+        font-family: "Bebas Neue", sans-serif;
+        overflow: hidden;
+        width: 100vw;
+        height: 100vh;
+      }
+
+      /* Dynamic Nike loader */
+      #nikeLoader {
+        position: fixed;
+        width: 100vw;
+        height: 100vh;
+        background-color: #000;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 100;
+        transition: opacity 1s ease-out;
+        background-image: linear-gradient(
+            0deg,
+            rgba(0, 0, 0, 0.9) 0%,
+            rgba(0, 0, 0, 0.7) 100%
+          ),
+          repeating-linear-gradient(
+            0deg,
+            transparent 0px,
+            transparent 2px,
+            rgba(255, 0, 0, 0.1) 2px,
+            rgba(255, 0, 0, 0.1) 4px
+          );
+        background-size: 100% 100%, 100% 4px;
+      }
+
+      #nikeLogoContainer {
+        width: 150px;
+        height: 150px;
+        margin-bottom: 30px;
+        filter: drop-shadow(0 0 10px rgba(255, 0, 0, 0.7));
+        position: relative;
+      }
+
+      #nikeLogoContainer::before {
+        content: "";
+        position: absolute;
+        top: -20px;
+        left: -20px;
+        right: -20px;
+        bottom: -20px;
+        border: 2px solid gold;
+        border-radius: 50%;
+        animation: ring-spin 10s linear infinite;
+        opacity: 0.5;
+      }
+
+      #nikeLogoContainer::after {
+        content: "";
+        position: absolute;
+        top: -30px;
+        left: -30px;
+        right: -30px;
+        bottom: -30px;
+        border: 3px solid red;
+        border-radius: 50%;
+        animation: ring-spin 15s linear infinite reverse;
+        opacity: 0.3;
+      }
+
+      @keyframes ring-spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      #nikeLoadingText {
+        font-family: "Anton", sans-serif;
+        font-size: 42px;
+        text-transform: uppercase;
+        letter-spacing: 12px;
+        margin-bottom: 30px;
+        color: #fff;
+        text-shadow: 0 0 10px rgba(255, 0, 0, 0.8),
+          0 0 20px rgba(255, 0, 0, 0.5), 0 0 30px rgba(255, 0, 0, 0.3);
+        animation: textFlicker 3s infinite alternate;
+        position: relative;
+      }
+
+      #nikeLoadingText::before {
+        content: "";
+        position: absolute;
+        top: -10px;
+        left: -10px;
+        right: -10px;
+        bottom: -10px;
+        background: radial-gradient(
+          circle,
+          rgba(255, 0, 0, 0.2) 0%,
+          transparent 70%
+        );
+        z-index: -1;
+        animation: glowPulse 2s infinite alternate;
+      }
+
+      @keyframes textFlicker {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.9;
+        }
+        75% {
+          opacity: 0.95;
+        }
+      }
+
+      @keyframes glowPulse {
+        0% {
+          opacity: 0.3;
+          transform: scale(0.95);
+        }
+        100% {
+          opacity: 0.7;
+          transform: scale(1.05);
+        }
+      }
+
+      #nikeLoadingBar {
+        width: 300px;
+        height: 3px;
+        background-color: rgba(255, 255, 255, 0.1);
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(255, 0, 0, 0.3);
+      }
+
+      #nikeLoadingBar div {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #ff0000, #ff9900);
+        transition: width 0.3s;
+        box-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
+      }
+
+      #copyright {
+        position: absolute;
+        bottom: 20px;
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.3);
+        letter-spacing: 1px;
+        font-family: monospace;
+      }
+
+      /* Main container */
+      #model-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 20; /* Higher z-index to ensure model is on top */
+      }
+
+      /* UI Elements */
+      #ui {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 50; /* Highest z-index to be above everything */
+        overflow: hidden;
+      }
+
+      #header {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 30px 40px;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+        z-index: 50; /* Same high z-index as UI container */
+      }
+
+      #header-logo {
+        font-family: "Anton", sans-serif;
+        font-size: 32px;
+        letter-spacing: 2px;
+        background: linear-gradient(90deg, #fff, #ccc);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      #header-nav {
+        display: flex;
+        gap: 40px;
+      }
+
+      .nav-item {
+        font-size: 18px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        opacity: 0.8;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        pointer-events: auto;
+        color: white;
+        text-decoration: none;
+        position: relative;
+      }
+
+      .nav-item:hover {
+        opacity: 1;
+        text-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
+      }
+
+      .nav-item::after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: linear-gradient(90deg, #ff0000, #ff5e00);
+        transition: width 0.3s ease;
+      }
+
+      .nav-item:hover::after {
+        width: 100%;
+      }
+
+      #product-info {
+        position: absolute;
+        bottom: 80px;
+        left: 60px;
+        width: 400px;
+        transition: all 0.5s ease;
+        animation: fadeInUp 1s ease-out;
+        z-index: 50; /* Same high z-index as header */
+      }
+
+      #product-title {
+        font-family: "Orbitron", sans-serif;
+        font-size: 48px;
+        font-weight: 900;
+        margin-bottom: 15px;
+        letter-spacing: 1px;
+        background: linear-gradient(90deg, #fff, #ff0000);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0 0 5px rgba(255, 0, 0, 0.3);
+        position: relative;
+      }
+
+      #product-title::after {
+        content: "23";
+        position: absolute;
+        right: -50px;
+        top: -15px;
+        font-size: 80px;
+        opacity: 0.2;
+        color: #ff0000;
+        font-family: "Anton", sans-serif;
+        z-index: -1;
+      }
+
+      #product-description {
+        font-size: 18px;
+        line-height: 1.5;
+        margin-bottom: 20px;
+        opacity: 0.8;
+      }
+
+      #product-price {
+        font-family: "Orbitron", sans-serif;
+        font-size: 32px;
+        font-weight: 700;
+        color: #ff0000;
+        text-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+      }
+
+      #cta-button {
+        position: absolute;
+        bottom: 80px;
+        right: 60px;
+        background: linear-gradient(90deg, #ff0000, #ff5e00);
+        color: white;
+        font-family: "Orbitron", sans-serif;
+        font-size: 18px;
+        letter-spacing: 1px;
+        padding: 15px 40px;
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
+        pointer-events: auto;
+        text-transform: uppercase;
+        font-weight: 700;
+        box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+        transition: all 0.3s ease;
+        z-index: 50; /* Same high z-index as header */
+      }
+
+      #cta-button:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(255, 0, 0, 0.7);
+      }
+
+      /* Background elements */
+      #background-elements {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 5;
+        pointer-events: none;
+        overflow: hidden;
+      }
+
+      #dynamic-bg {
+        position: absolute;
+        width: 100vw;
+        height: 100vh;
+        background: radial-gradient(circle at center, #6a0000, #000);
+        opacity: 0.8;
+      }
+
+      #grid-overlay {
+        position: absolute;
+        width: 100vw;
+        height: 100vh;
+        background-image: linear-gradient(
+            rgba(255, 0, 0, 0.1) 1px,
+            transparent 1px
+          ),
+          linear-gradient(90deg, rgba(255, 0, 0, 0.1) 1px, transparent 1px);
+        background-size: 50px 50px;
+        opacity: 0.2;
+      }
+
+      .floating-particle {
+        position: absolute;
+        width: 5px;
+        height: 5px;
+        background: #ff0000;
+        border-radius: 50%;
+        filter: blur(1px);
+        box-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
+        animation: float 15s infinite linear;
+        opacity: 0.3;
+      }
+
+      @keyframes float {
+        0% {
+          transform: translateY(0) translateX(0);
+        }
+        50% {
+          transform: translateY(-50vh) translateX(20vw);
+        }
+        100% {
+          transform: translateY(-100vh) translateX(0);
+        }
+      }
+
+      /* Basketball court lines */
+      #court-lines {
+        position: absolute;
+        width: 100vw;
+        height: 100vh;
+        background-image: radial-gradient(
+            circle at center,
+            rgba(255, 0, 0, 0.1) 70px,
+            transparent 71px
+          ),
+          radial-gradient(
+            circle at center,
+            transparent 65px,
+            rgba(255, 0, 0, 0.1) 66px,
+            rgba(255, 0, 0, 0.1) 68px,
+            transparent 69px
+          );
+        opacity: 0.3;
+      }
+
+      /* Jumpman silhouette */
+      #jumpman {
+        position: absolute;
+        top: 50%;
+        right: 5%;
+        width: 300px;
+        height: 300px;
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" fill="red" opacity="0.3"><path d="M25,0 C26,5 28,9 35,7 C37,6 39,4 40,3 C39,8 35,15 32,18 C29,21 25,22 23,18 C21,22 17,21 14,18 C11,15 7,8 6,3 C7,4 9,6 11,7 C18,9 20,5 21,0 C21,0 25,0 25,0 Z"/></svg>');
+        background-repeat: no-repeat;
+        z-index: 6;
+        opacity: 0.3;
+        transform: rotate(15deg);
+        filter: drop-shadow(0 0 20px rgba(255, 0, 0, 0.5));
+        animation: float-jumpman 10s infinite ease-in-out;
+      }
+
+      @keyframes float-jumpman {
+        0%,
+        100% {
+          transform: rotate(15deg) translateY(0);
+        }
+        50% {
+          transform: rotate(15deg) translateY(-20px);
+        }
+      }
+
+      /* Basketball particles */
+      .basketball-particle {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background-image: radial-gradient(circle at 30% 30%, #ff8c00, #cc4000);
+        box-shadow: 0 0 10px rgba(255, 100, 0, 0.5);
+        opacity: 0.2;
+        animation: float-ball 20s infinite linear;
+      }
+
+      @keyframes float-ball {
+        0% {
+          transform: translateY(100vh) translateX(0) rotate(0deg);
+        }
+        100% {
+          transform: translateY(-100vh) translateX(30vw) rotate(720deg);
+        }
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Dynamic Nike loader -->
+    <div id="nikeLoader">
+      <div id="nikeLoadingText">LEGENDARY</div>
+      <div id="nikeLoadingBar"><div></div></div>
+      <div id="copyright">NIKE, Inc. All Rights Reserved.</div>
+    </div>
+
+    <!-- Background elements -->
+    <div id="background-elements">
+      <div id="dynamic-bg"></div>
+      <div id="grid-overlay"></div>
+      <div id="court-lines"></div>
+      <div id="jumpman"></div>
+    </div>
+
+    <!-- Main Container -->
+    <div id="model-container"></div>
+
+    <!-- UI Elements -->
+    <div id="ui">
+      <div id="header">
+        <div id="header-logo">NIKE</div>
+        <div id="header-nav">
+          <a href="history.html" class="nav-item">History</a>
+          <a href="#" class="nav-item">Collection</a>
+          <a href="#" class="nav-item">Legacy</a>
+          <a href="#" class="nav-item">Store</a>
+        </div>
+      </div>
+
+      <div id="product-info">
+        <div id="product-title">AIR JORDAN XI</div>
+        <div id="product-description">
+          The legendary shoes that changed basketball forever. Worn by Michael
+          Jordan during his iconic 1995-96 season, leading to a record-breaking
+          72-10 and an NBA championship. The first-ever patent leather on a
+          basketball shoe. A revolution in design. A statement in style.
+        </div>
+        <div id="product-price">$225.00</div>
+      </div>
+
+      <button id="cta-button">Add to Cart</button>
+    </div>
+
+    <script>
+      // Global variables
+      let scene, camera, renderer, model;
+      let nikeText, airJordanText; // Store text meshes
+      let lastTime = 0;
+      let mouseX = 0,
+        mouseY = 0;
+      let targetRotationY = 0;
+      let targetRotationX = 0;
+
+      // DOM elements
+      const nikeLoader = document.getElementById("nikeLoader");
+      const nikeLoadingBar = document.querySelector("#nikeLoadingBar div");
+      const modelContainer = document.getElementById("model-container");
+      const backgroundElements = document.getElementById("background-elements");
+
+      // Add floating particles
+      function addFloatingParticles() {
+        for (let i = 0; i < 50; i++) {
+          const particle = document.createElement("div");
+          particle.classList.add("floating-particle");
+
+          // Random positioning
+          particle.style.left = `${Math.random() * 100}vw`;
+          particle.style.top = `${Math.random() * 100}vh`;
+          particle.style.width = `${2 + Math.random() * 4}px`;
+          particle.style.height = particle.style.width;
+
+          // Random animation timing
+          particle.style.animationDuration = `${15 + Math.random() * 30}s`;
+          particle.style.animationDelay = `${Math.random() * 5}s`;
+
+          backgroundElements.appendChild(particle);
+        }
+      }
+
+      // Add basketball particles
+      function addBasketballParticles() {
+        for (let i = 0; i < 10; i++) {
+          const particle = document.createElement("div");
+          particle.classList.add("basketball-particle");
+
+          // Random positioning
+          particle.style.left = `${Math.random() * 100}vw`;
+          particle.style.bottom = `-50px`;
+
+          // Random sizing
+          const size = 10 + Math.random() * 15;
+          particle.style.width = `${size}px`;
+          particle.style.height = `${size}px`;
+
+          // Random animation timing
+          particle.style.animationDuration = `${15 + Math.random() * 20}s`;
+          particle.style.animationDelay = `${Math.random() * 10}s`;
+
+          backgroundElements.appendChild(particle);
+        }
+      }
+
+      // Nike Loader
+      function startNikeLoader() {
+        let progress = 0;
+        let modelLoaded = false;
+
+        // Add floating particles
+        addFloatingParticles();
+        addBasketballParticles();
+
+        // Start preloading the 3D model immediately
+        preloadModel();
+
+        const loadingInterval = setInterval(function () {
+          // Increase progress based on whether model has loaded
+          progress += modelLoaded ? 10 : Math.random() * 5;
+
+          if (progress >= 100) {
+            progress = 100;
+            clearInterval(loadingInterval);
+
+            // Fade out Nike loader and show 3D scene
+            setTimeout(function () {
+              nikeLoader.style.opacity = 0;
+              setTimeout(function () {
+                nikeLoader.style.display = "none";
+              }, 1000);
+            }, 500);
+          }
+          nikeLoadingBar.style.width = progress + "%";
+        }, 150);
+
+        // Track when model is loaded to speed up progress bar
+        window.modelLoadedCallback = function () {
+          modelLoaded = true;
+        };
+      }
+
+      // Preload 3D model while Nike loader is showing
+      function preloadModel() {
+        // Initialize scene immediately
+        init();
+      }
+
+      // Initialize Three.js scene
+      function init() {
+        // Create scene
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x000000);
+
+        // Set up camera
+        camera = new THREE.PerspectiveCamera(
+          35,
+          window.innerWidth / window.innerHeight,
+          0.1,
+          1000
+        );
+        camera.position.set(0, 0, 90);
+
+        // Create a new rendering group for text (rendering order)
+        const textGroup = new THREE.Group();
+        scene.add(textGroup);
+
+        // Add dramatic background text - this will be added to textGroup later
+        addBackgroundText(textGroup);
+
+        // Set up renderer
+        renderer = new THREE.WebGLRenderer({
+          antialias: true,
+          alpha: true,
+        });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        renderer.outputEncoding = THREE.sRGBEncoding;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.2;
+        modelContainer.appendChild(renderer.domElement);
+
+        // Add lights
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+        scene.add(ambientLight);
+
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight.position.set(5, 10, 10);
+        scene.add(directionalLight);
+
+        // Add environment map for reflections
+        const envMapLoader = new THREE.CubeTextureLoader();
+        const envMap = envMapLoader.load([
+          "https://threejs.org/examples/textures/cube/pisa/px.png",
+          "https://threejs.org/examples/textures/cube/pisa/nx.png",
+          "https://threejs.org/examples/textures/cube/pisa/py.png",
+          "https://threejs.org/examples/textures/cube/pisa/ny.png",
+          "https://threejs.org/examples/textures/cube/pisa/pz.png",
+          "https://threejs.org/examples/textures/cube/pisa/nz.png",
+        ]);
+        scene.environment = envMap;
+
+        // Add dramatic lighting with more subtle colored highlights
+        const redSpotlight = new THREE.SpotLight(0xff0000, 1);
+        redSpotlight.position.set(-30, 20, 50);
+        redSpotlight.angle = Math.PI / 6;
+        redSpotlight.penumbra = 0.5;
+        scene.add(redSpotlight);
+
+        const blueSpotlight = new THREE.SpotLight(0x0044ff, 1);
+        blueSpotlight.position.set(30, -10, 30);
+        blueSpotlight.angle = Math.PI / 6;
+        blueSpotlight.penumbra = 0.5;
+        scene.add(blueSpotlight);
+
+        // Main spotlight
+        const mainSpotlight = new THREE.SpotLight(0xffffff, 3);
+        mainSpotlight.position.set(0, 30, 50);
+        mainSpotlight.angle = Math.PI / 8;
+        mainSpotlight.penumbra = 0.2;
+        mainSpotlight.castShadow = true;
+        mainSpotlight.shadow.mapSize.width = 1024;
+        mainSpotlight.shadow.mapSize.height = 1024;
+        mainSpotlight.shadow.bias = -0.0001;
+        scene.add(mainSpotlight);
+
+        // Add a rim light for better definition
+        const rimLight = new THREE.SpotLight(0xffffff, 2);
+        rimLight.position.set(-20, 10, 40);
+        rimLight.angle = Math.PI / 10;
+        rimLight.penumbra = 0.1;
+        scene.add(rimLight);
+
+        // Add a sharp focused fill light
+        const fillLight = new THREE.DirectionalLight(0xffffff, 1.5);
+        fillLight.position.set(30, 20, 60);
+        scene.add(fillLight);
+
+        // Very limited orbit controls
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableZoom = false;
+        controls.enablePan = false;
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.maxPolarAngle = Math.PI / 2 + 0.3;
+        controls.minPolarAngle = Math.PI / 2 - 0.3;
+        controls.enableRotate = false; // Completely disable orbit controls rotation
+        controls.update();
+
+        // Mouse movement for subtle rotation
+        document.addEventListener("mousemove", onDocumentMouseMove, false);
+        function onDocumentMouseMove(event) {
+          mouseX = (event.clientX - window.innerWidth / 2) / 25; // Increased sensitivity (changed from 50 to 25)
+          mouseY = (event.clientY - window.innerHeight / 2) / 25; // Increased sensitivity (changed from 50 to 25)
+        }
+
+        // Handle window resize
+        window.addEventListener("resize", () => {
+          camera.aspect = window.innerWidth / window.innerHeight;
+          camera.updateProjectionMatrix();
+          renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Start animation loop
+        animate();
+
+        // Load the model
+        loadModel("Air_Jordan.glb");
+      }
+
+      // Add dramatic fixed background text
+      function addBackgroundText(textGroup) {
+        // Create large JUMPMAN text
+        const nikeCanvas = document.createElement("canvas");
+        const nikeContext = nikeCanvas.getContext("2d");
+        nikeCanvas.width = 2048;
+        nikeCanvas.height = 1024;
+
+        // Fill with black background
+        nikeContext.fillStyle = "#000000";
+        nikeContext.fillRect(0, 0, nikeCanvas.width, nikeCanvas.height);
+
+        // Add blur effect
+        nikeContext.filter = "blur(8px)";
+
+        // Gradient for JUMPMAN text
+        const nikeGradient = nikeContext.createLinearGradient(
+          0,
+          0,
+          nikeCanvas.width,
+          0
+        );
+        nikeGradient.addColorStop(0, "rgba(255, 0, 0, 0.08)");
+        nikeGradient.addColorStop(0.5, "rgba(255, 255, 255, 0.15)");
+        nikeGradient.addColorStop(1, "rgba(0, 30, 255, 0.08)");
+
+        // Bold JUMPMAN text
+        nikeContext.font = "bold 650px Anton, sans-serif";
+        nikeContext.textAlign = "center";
+        nikeContext.textBaseline = "middle";
+        nikeContext.fillStyle = nikeGradient;
+        nikeContext.fillText(
+          "JUMPMAN",
+          nikeCanvas.width / 2,
+          nikeCanvas.height / 2
+        );
+
+        // Add glow effect
+        nikeContext.shadowColor = "rgba(255, 0, 0, 0.2)";
+        nikeContext.shadowBlur = 30;
+        nikeContext.fillText(
+          "JUMPMAN",
+          nikeCanvas.width / 2,
+          nikeCanvas.height / 2
+        );
+
+        // Create 23 text
+        const jordanCanvas = document.createElement("canvas");
+        const jordanContext = jordanCanvas.getContext("2d");
+        jordanCanvas.width = 2048;
+        jordanCanvas.height = 1024;
+
+        // Add blur effect
+        jordanContext.filter = "blur(6px)";
+
+        // Gradient for 23 text
+        const jordanGradient = jordanContext.createLinearGradient(
+          0,
+          0,
+          jordanCanvas.width,
+          0
+        );
+        jordanGradient.addColorStop(0, "rgba(255, 0, 0, 0.06)");
+        jordanGradient.addColorStop(0.5, "rgba(255, 255, 255, 0.12)");
+        jordanGradient.addColorStop(1, "rgba(255, 0, 0, 0.06)");
+
+        // Draw 23 text
+        jordanContext.font = "bold 500px Orbitron, sans-serif";
+        jordanContext.textAlign = "center";
+        jordanContext.textBaseline = "middle";
+        jordanContext.fillStyle = jordanGradient;
+        jordanContext.fillText(
+          "23",
+          jordanCanvas.width / 2,
+          jordanCanvas.height / 2
+        );
+
+        // Add glow effect
+        jordanContext.shadowColor = "rgba(255, 0, 0, 0.15)";
+        jordanContext.shadowBlur = 25;
+        jordanContext.fillText(
+          "23",
+          jordanCanvas.width / 2,
+          jordanCanvas.height / 2
+        );
+
+        // Create LEGACY text
+        const legacyCanvas = document.createElement("canvas");
+        const legacyContext = legacyCanvas.getContext("2d");
+        legacyCanvas.width = 2048;
+        legacyCanvas.height = 1024;
+
+        // Add blur effect
+        legacyContext.filter = "blur(10px)";
+
+        // Gradient for LEGACY text
+        const legacyGradient = legacyContext.createLinearGradient(
+          0,
+          legacyCanvas.height / 2,
+          legacyCanvas.width,
+          legacyCanvas.height / 2
+        );
+        legacyGradient.addColorStop(0, "rgba(150, 0, 0, 0.03)");
+        legacyGradient.addColorStop(0.5, "rgba(200, 0, 0, 0.08)");
+        legacyGradient.addColorStop(1, "rgba(150, 0, 0, 0.03)");
+
+        // Draw LEGACY text
+        legacyContext.font = "bold 300px Orbitron, sans-serif";
+        legacyContext.textAlign = "center";
+        legacyContext.textBaseline = "middle";
+        legacyContext.fillStyle = legacyGradient;
+        legacyContext.fillText(
+          "LEGACY",
+          legacyCanvas.width / 2,
+          legacyCanvas.height / 2
+        );
+
+        // Add glow effect
+        legacyContext.shadowColor = "rgba(255, 0, 0, 0.1)";
+        legacyContext.shadowBlur = 35;
+        legacyContext.fillText(
+          "LEGACY",
+          legacyCanvas.width / 2,
+          legacyCanvas.height / 2
+        );
+
+        // Create textures and materials with enhanced blending
+        const nikeMaterial = new THREE.MeshBasicMaterial({
+          map: new THREE.CanvasTexture(nikeCanvas),
+          transparent: true,
+          opacity: 0.4,
+          side: THREE.DoubleSide,
+          blending: THREE.AdditiveBlending,
+          depthWrite: false,
+        });
+
+        const jordanMaterial = new THREE.MeshBasicMaterial({
+          map: new THREE.CanvasTexture(jordanCanvas),
+          transparent: true,
+          opacity: 0.35,
+          side: THREE.DoubleSide,
+          blending: THREE.AdditiveBlending,
+          depthWrite: false,
+        });
+
+        const legacyMaterial = new THREE.MeshBasicMaterial({
+          map: new THREE.CanvasTexture(legacyCanvas),
+          transparent: true,
+          opacity: 0.3,
+          side: THREE.DoubleSide,
+          blending: THREE.AdditiveBlending,
+          depthWrite: false,
+        });
+
+        // Create and position text meshes
+        const nikeText = new THREE.Mesh(
+          new THREE.PlaneGeometry(200, 100),
+          nikeMaterial
+        );
+        nikeText.position.set(0, 0, -180);
+        nikeText.renderOrder = -2;
+        textGroup.add(nikeText);
+
+        const jordanText = new THREE.Mesh(
+          new THREE.PlaneGeometry(180, 90),
+          jordanMaterial
+        );
+        jordanText.position.set(0, -10, -150);
+        jordanText.renderOrder = -1;
+        textGroup.add(jordanText);
+
+        const legacyText = new THREE.Mesh(
+          new THREE.PlaneGeometry(250, 125),
+          legacyMaterial
+        );
+        legacyText.position.set(0, 20, -200);
+        legacyText.renderOrder = -3;
+        textGroup.add(legacyText);
+
+        // Add subtle animation
+        function animateText() {
+          nikeText.position.y = Math.sin(Date.now() * 0.0005) * 2;
+          jordanText.position.y = Math.sin(Date.now() * 0.0003) * 1.5 - 10;
+          legacyText.position.y = Math.sin(Date.now() * 0.0004) * 1.8 + 20;
+          requestAnimationFrame(animateText);
+        }
+        animateText();
+      }
+
+      // Animation loop
+      function animate(time) {
+        time = time || 0;
+        requestAnimationFrame(animate);
+
+        if (model) {
+          // Calculate target rotation based on mouse position with increased sensitivity
+          targetRotationY = THREE.MathUtils.lerp(
+            targetRotationY,
+            mouseX * 0.1, // Increased from 0.005 to 0.1 for more noticeable movement
+            0.05 // Increased from 0.02 to 0.05 for faster response
+          );
+          targetRotationX = THREE.MathUtils.lerp(
+            targetRotationX,
+            mouseY * 0.05, // Increased from 0.002 to 0.05 for more noticeable movement
+            0.05 // Increased from 0.02 to 0.05 for faster response
+          );
+
+          // Apply rotation starting from the front-side view position
+          model.rotation.y = -Math.PI / 6 + targetRotationY;
+          model.rotation.x = targetRotationX;
+        }
+
+        // Make the background text subtly move opposite to the shoe
+        if (nikeText && airJordanText) {
+          nikeText.rotation.y = -targetRotationY * 0.3; // Increased from 0.05 to 0.3
+          airJordanText.rotation.y = -targetRotationY * 0.6; // Increased from 0.1 to 0.6
+        }
+
+        renderer.render(scene, camera);
+      }
+
+      // Load 3D model
+      function loadModel(modelPath) {
+        console.log("Loading model:", modelPath);
+
+        // Load the model using GLTFLoader with higher quality settings
+        const loader = new THREE.GLTFLoader();
+
+        // Custom loading options
+        const loadingManager = new THREE.LoadingManager();
+        loadingManager.onProgress = function (url, loaded, total) {
+          console.log(
+            `Loading file: ${url} (${Math.round((loaded / total) * 100)}%)`
+          );
+        };
+
+        loader.setPath("");
+        loader.manager = loadingManager;
+
+        loader.load(
+          modelPath,
+          // Success callback
+          function (gltf) {
+            console.log("Model loaded successfully!");
+
+            model = gltf.scene;
+
+            // Apply materials and enhanced shadows
+            model.traverse(function (node) {
+              if (node.isMesh) {
+                // Enhance material properties for better look
+                if (node.material) {
+                  // Make material crisp and reflective
+                  node.material.roughness = 0.25;
+                  node.material.metalness = 0.7;
+                  node.material.envMapIntensity = 2.0;
+                  node.material.needsUpdate = true;
+
+                  // Enable high quality shadows
+                  node.castShadow = true;
+                  node.receiveShadow = true;
+
+                  // Texture enhancement
+                  if (node.material.map) {
+                    node.material.map.anisotropy =
+                      renderer.capabilities.getMaxAnisotropy();
+                    node.material.map.minFilter = THREE.LinearFilter;
+                    node.material.map.magFilter = THREE.LinearFilter;
+                    node.material.map.needsUpdate = true;
+                  }
+                }
+              }
+            });
+
+            // Scale & position for dramatic view - optimal size for clarity
+            model.scale.set(0.7, 0.7, 0.7);
+            model.position.set(0, -3, 22); // Perfect focus distance
+            model.rotation.y = Math.PI / 5; // Optimal viewing angle
+            model.rotation.z = Math.PI * 0.03; // Slight tilt
+
+            // Center model
+            const box = new THREE.Box3().setFromObject(model);
+            const center = box.getCenter(new THREE.Vector3());
+            model.position.x = -center.x;
+
+            scene.add(model);
+
+            // Signal that model is loaded
+            if (window.modelLoadedCallback) {
+              window.modelLoadedCallback();
+            }
+          },
+          // Progress callback
+          function (xhr) {
+            if (xhr.lengthComputable) {
+              const percentComplete = Math.round(
+                (xhr.loaded / xhr.total) * 100
+              );
+              console.log(`Model loading: ${percentComplete}%`);
+            }
+          },
+          // Error callback
+          function (error) {
+            console.error("Error loading model:", error);
+
+            // Try next model format
+            if (modelPath === "Air_Jordan.glb") {
+              loadModel("Air jordan.glb");
+            } else if (modelPath === "Air jordan.glb") {
+              loadModel("air_jordan.glb");
+            } else if (modelPath === "air_jordan.glb") {
+              loadModel("Air_Jordan.gltf");
+            } else {
+              console.error("Could not load any model format");
+            }
+          }
+        );
+      }
+
+      // Start with Nike loader first
+      window.onload = startNikeLoader;
+
+      // Add click event for CTA button
+      document
+        .getElementById("cta-button")
+        .addEventListener("click", function () {
+          alert("The legend is now in your cart.");
+        });
+    </script>
+  </body>
+</html>

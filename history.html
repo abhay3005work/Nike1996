@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nike Air Jordan | Legend</title>
+
+    <!-- Favicon -->
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👟</text></svg>"
+    />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Orbitron:wght@400;700;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <!-- Locomotive Scroll for smooth scrolling -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.3/dist/locomotive-scroll.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.3/dist/locomotive-scroll.min.js"></script>
+
+    <style>
+      /* Reset and base styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: #000;
+        color: white;
+        font-family: "Bebas Neue", sans-serif;
+        overflow-x: hidden;
+      }
+
+      /* Smooth scroll container */
+      .scroll-container {
+        position: relative;
+        width: 100%;
+      }
+
+      /* Navigation */
+      .nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        padding: 20px 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 100;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(10px);
+      }
+
+      .nav-logo {
+        font-family: "Anton", sans-serif;
+        font-size: 28px;
+        letter-spacing: 2px;
+        background: linear-gradient(90deg, #fff, #ff0000);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        position: relative;
+      }
+
+      .nav-logo::after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: linear-gradient(90deg, #ff0000, #ff5e00);
+        transition: width 0.3s ease;
+      }
+
+      .nav-logo:hover::after {
+        width: 100%;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 30px;
+      }
+
+      .nav-link {
+        font-size: 18px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        opacity: 0.8;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        color: white;
+        text-decoration: none;
+      }
+
+      .nav-link:hover {
+        opacity: 1;
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+      }
+
+      /* Hero Section - Black Jesus Theme */
+      .hero {
+        position: relative;
+        height: 100vh;
+        width: 100%;
+        overflow: hidden;
+        background: #000;
+      }
+
+      .hero-video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .hero-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          to bottom,
+          rgba(0, 0, 0, 0.4),
+          rgba(0, 0, 0, 0.7)
+        );
+        z-index: 1;
+      }
+
+      .hero-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        width: 90%;
+        max-width: 1200px;
+        z-index: 2;
+      }
+
+      .hero-title {
+        font-family: "Anton", sans-serif;
+        font-size: 120px;
+        line-height: 1;
+        margin-bottom: 20px;
+        text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+      }
+
+      .hero-subtitle {
+        font-size: 24px;
+        letter-spacing: 2px;
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+      }
+
+      .hero-scroll {
+        position: absolute;
+        bottom: 40px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 14px;
+        letter-spacing: 2px;
+        z-index: 2;
+        opacity: 0.7;
+        animation: bounce 2s infinite;
+      }
+
+      .nike-swoosh {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        width: 100px;
+        height: auto;
+        z-index: 3;
+        opacity: 0.8;
+        filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+      }
+
+      .video-controls {
+        position: absolute;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 3;
+        display: flex;
+        gap: 20px;
+        align-items: center;
+      }
+
+      .video-control-btn {
+        background: rgba(0, 0, 0, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        padding: 10px 15px;
+        border-radius: 5px;
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .video-control-btn:hover {
+        background: rgba(255, 0, 0, 0.6);
+        transform: translateY(-3px);
+      }
+
+      @keyframes bounce {
+        0%,
+        20%,
+        50%,
+        80%,
+        100% {
+          transform: translateY(0) translateX(-50%);
+        }
+        40% {
+          transform: translateY(-20px) translateX(-50%);
+        }
+        60% {
+          transform: translateY(-10px) translateX(-50%);
+        }
+      }
+
+      /* Content sections general styles */
+      .section {
+        padding: 120px 0;
+        position: relative;
+      }
+
+      .section-title {
+        font-family: "Anton", sans-serif;
+        font-size: 60px;
+        margin-bottom: 60px;
+        text-align: center;
+        text-transform: uppercase;
+        position: relative;
+      }
+
+      .section-title::after {
+        content: "";
+        position: absolute;
+        bottom: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 3px;
+        background: #fff;
+      }
+
+      /* Gallery Section - Graffiti Style */
+      .gallery {
+        padding: 100px 0;
+        background: #111;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .gallery::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url("https://images.pexels.com/photos/1309658/pexels-photo-1309658.jpeg?auto=compress&cs=tinysrgb&w=1600")
+          center/cover no-repeat;
+        opacity: 0.1;
+        z-index: 0;
+      }
+
+      .gallery-title {
+        font-family: "Anton", sans-serif;
+        font-size: 60px;
+        margin-bottom: 60px;
+        text-align: center;
+        position: relative;
+        z-index: 1;
+        color: #fff;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      }
+
+      .gallery-title span {
+        position: relative;
+        display: inline-block;
+      }
+
+      .gallery-title span::after {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: linear-gradient(90deg, #000, #fff, #000);
+      }
+
+      .gallery-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 30px;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .gallery-item {
+        position: relative;
+        border-radius: 5px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        transition: all 0.3s ease;
+        transform: perspective(1000px) rotateY(0);
+        border: 3px solid #333;
+      }
+
+      .gallery-item::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.1),
+          rgba(0, 0, 0, 0.1)
+        );
+        z-index: 1;
+      }
+
+      .gallery-item:hover {
+        transform: perspective(1000px) rotateY(5deg) translateY(-10px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
+        border-color: #555;
+      }
+
+      .gallery-item img {
+        width: 100%;
+        height: 400px;
+        object-fit: cover;
+        transition: all 0.5s ease;
+        filter: grayscale(30%);
+      }
+
+      .gallery-item:hover img {
+        filter: grayscale(0%);
+        transform: scale(1.05);
+      }
+
+      .gallery-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 20px;
+        background: rgba(0, 0, 0, 0.7);
+        transform: translateY(100%);
+        transition: all 0.3s ease;
+        z-index: 2;
+      }
+
+      .gallery-item:hover .gallery-overlay {
+        transform: translateY(0);
+      }
+
+      .gallery-title-small {
+        font-family: "Anton", sans-serif;
+        font-size: 24px;
+        margin-bottom: 10px;
+        color: #fff;
+      }
+
+      .gallery-desc {
+        font-size: 14px;
+        color: #ccc;
+        font-family: "Bebas Neue", sans-serif;
+      }
+
+      /* Graffiti Decorations */
+      .graffiti-decor {
+        position: absolute;
+        font-family: "Anton", sans-serif;
+        opacity: 0.1;
+        color: #fff;
+        text-transform: uppercase;
+        z-index: 0;
+      }
+
+      .graffiti-1 {
+        top: 10%;
+        left: 5%;
+        font-size: 120px;
+        transform: rotate(-20deg);
+      }
+
+      .graffiti-2 {
+        bottom: 15%;
+        right: 5%;
+        font-size: 100px;
+        transform: rotate(15deg);
+      }
+
+      .graffiti-3 {
+        top: 40%;
+        right: 10%;
+        font-size: 80px;
+        transform: rotate(-10deg);
+      }
+
+      /* Red and White Section Styles */
+      .moments {
+        padding: 120px 0;
+        background: #700; /* Darker, less saturated red */
+        position: relative;
+        overflow: hidden;
+      }
+
+      .moments::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+          circle,
+          rgba(150, 0, 0, 0.5),
+          rgba(80, 0, 0, 0.7)
+        );
+        opacity: 0.6; /* Reduced opacity of the red overlay */
+        z-index: 0;
+      }
+
+      .moments-title {
+        font-family: "Anton", sans-serif;
+        font-size: 60px;
+        margin-bottom: 60px;
+        text-align: center;
+        color: #fff;
+        position: relative;
+        z-index: 1;
+        text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);
+      }
+
+      .moments-title::after {
+        content: "";
+        position: absolute;
+        bottom: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 3px;
+        background: #fff;
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+      }
+
+      .moments-video-wrapper {
+        position: relative;
+        max-width: 900px;
+        margin: 0 auto 80px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        border: 5px solid #fff;
+        z-index: 1;
+      }
+
+      .moments-video {
+        width: 100%;
+        display: block;
+      }
+
+      .moments-video-controls {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 2;
+        display: flex;
+        gap: 15px;
+        align-items: center;
+      }
+
+      .moments-control-btn {
+        background: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        color: white;
+        padding: 8px 12px;
+        border-radius: 5px;
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .moments-control-btn:hover {
+        background: rgba(255, 255, 255, 0.4);
+        transform: translateY(-2px);
+      }
+
+      .moments-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 30px;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .moment-item {
+        position: relative;
+        overflow: hidden;
+        border-radius: 10px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+        background: #fff;
+        padding: 20px;
+        color: #000;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(0); /* Ensure no blur is applied */
+      }
+
+      .moment-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
+      }
+
+      .moment-title {
+        font-family: "Anton", sans-serif;
+        font-size: 24px;
+        color: #900;
+        border-bottom: 2px solid #ddd;
+        padding-bottom: 10px;
+      }
+
+      .moment-frame {
+        width: 100%;
+        height: 250px;
+        border: 0;
+        border-radius: 5px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        filter: contrast(1.05) brightness(1.05); /* Slightly enhance contrast and brightness */
+      }
+
+      .moment-desc {
+        font-size: 16px;
+        line-height: 1.5;
+        color: #333;
+      }
+
+      /* Custom Jordan Numbers */
+      .jordan-number {
+        position: absolute;
+        font-family: "Anton", sans-serif;
+        color: rgba(255, 255, 255, 0.1);
+        z-index: 0;
+        font-size: 400px;
+        line-height: 1;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      /* Legacy section - Transition between black and red themes */
+      .legacy {
+        padding: 150px 0;
+        background: linear-gradient(to bottom, #000, #500);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .legacy-title {
+        font-family: "Anton", sans-serif;
+        font-size: 60px;
+        margin-bottom: 60px;
+        text-align: center;
+        color: #fff;
+        position: relative;
+      }
+
+      .legacy-title::after {
+        content: "";
+        position: absolute;
+        bottom: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 3px;
+        background: linear-gradient(90deg, transparent, #fff, transparent);
+      }
+
+      .legacy-quote {
+        max-width: 800px;
+        margin: 0 auto 50px;
+        padding: 30px;
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 10px;
+        border-left: 5px solid #900;
+        position: relative;
+      }
+
+      .legacy-quote::before {
+        content: "\201C";
+        position: absolute;
+        top: 0;
+        left: 10px;
+        font-size: 60px;
+        color: rgba(255, 255, 255, 0.2);
+        font-family: serif;
+      }
+
+      .legacy-quote-text {
+        font-size: 24px;
+        font-style: italic;
+        line-height: 1.6;
+        margin-bottom: 20px;
+      }
+
+      .legacy-quote-author {
+        font-size: 18px;
+        text-align: right;
+        opacity: 0.8;
+      }
+
+      /* Responsive styles */
+      @media (max-width: 1024px) {
+        .gallery-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .hero-title {
+          font-size: 80px;
+        }
+
+        .moments-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .gallery-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .graffiti-1,
+        .graffiti-2,
+        .graffiti-3 {
+          font-size: 70px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .hero-title {
+          font-size: 60px;
+        }
+
+        .nav {
+          padding: 15px;
+        }
+
+        .nav-links {
+          gap: 15px;
+        }
+
+        .nav-link {
+          font-size: 14px;
+        }
+      }
+
+      /* Footer */
+      .footer {
+        padding: 40px 0;
+        text-align: center;
+        background: #000;
+        position: relative;
+      }
+
+      .footer::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #ff0000, transparent);
+      }
+
+      .footer p {
+        font-size: 16px;
+        opacity: 0.7;
+        margin-bottom: 15px;
+      }
+
+      .footer-logo {
+        width: 60px;
+        height: auto;
+        margin: 0 auto 20px;
+        display: block;
+        opacity: 0.8;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav class="nav">
+      <div class="nav-logo">NIKE</div>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="#legacy" class="nav-link">Legacy</a>
+        <a href="#moments" class="nav-link">Greatest Moments</a>
+        <a href="#gallery" class="nav-link">Gallery</a>
+      </div>
+    </nav>
+
+    <!-- Smooth Scroll Container -->
+    <div class="scroll-container" data-scroll-container>
+      <!-- Hero Section - Black Jesus Theme with nike2.mp4 -->
+      <section class="hero" data-scroll-section>
+        <video class="hero-video" autoplay muted id="heroVideo">
+          <source src="nike2.mp4" type="video/mp4" />
+        </video>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+          <h1 class="hero-title">BLACK JESUS</h1>
+          <p class="hero-subtitle">THE GREATEST OF ALL TIME</p>
+        </div>
+        <div class="video-controls">
+          <button class="video-control-btn" id="playPauseBtn">Pause</button>
+          <button class="video-control-btn" id="muteBtn">Mute</button>
+        </div>
+        <div class="hero-scroll">SCROLL DOWN</div>
+        <svg
+          class="nike-swoosh"
+          viewBox="0 0 69.45 25.4"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            fill="white"
+            d="M69.45 12.7C69.45 12.7 66.65 5.85 58.3 0.65C50.55 -4.2 42.65 3.75 35.2 10.2C30.2 14.55 25.55 13.7 22.35 6.8C22.05 6.15 21.1 4.2 19.5 2.25C16.25 -1.7 12.9 -0.45 11.3 0.5C4.75 4.35 0.7 15.7 0 25.4C9.2 17.65 21.85 5.45 26.1 8C30.8 10.8 29.2 15.95 25.65 19.3C23.1 21.7 15.15 28.9 15.15 28.9L30.2 19.3H30.25C30.25 19.3 34.4 16.5 38.55 13.1C42.85 9.6 50.8 1.25 55.35 2.55C58.4 3.45 53 10.95 48.8 13.9C42.25 18.65 34.3 19.5 34.3 19.5C34.3 19.5 43.95 19.9 52.4 15.85C60.7 11.9 68.8 14.25 69.45 12.7Z"
+          />
+        </svg>
+      </section>
+
+      <!-- Legacy Section - Transition between themes -->
+      <section class="legacy" id="legacy" data-scroll-section>
+        <h2 class="legacy-title">THE LEGACY</h2>
+
+        <div class="legacy-quote" data-scroll data-scroll-speed="1">
+          <p class="legacy-quote-text">
+            "I've missed more than 9,000 shots in my career. I've lost almost
+            300 games. Twenty-six times I've been trusted to take the
+            game-winning shot and missed. I've failed over and over and over
+            again in my life. And that is why I succeed."
+          </p>
+          <p class="legacy-quote-author">— Michael Jordan</p>
+        </div>
+
+        <div class="legacy-quote" data-scroll data-scroll-speed="1">
+          <p class="legacy-quote-text">
+            "Some people want it to happen, some wish it would happen, others
+            make it happen."
+          </p>
+          <p class="legacy-quote-author">— Michael Jordan</p>
+        </div>
+
+        <div class="legacy-quote" data-scroll data-scroll-speed="1">
+          <p class="legacy-quote-text">
+            "Talent wins games, but teamwork and intelligence win
+            championships."
+          </p>
+          <p class="legacy-quote-author">— Michael Jordan</p>
+        </div>
+      </section>
+
+      <!-- Gallery Section - Graffiti Style with Pexels Images -->
+      <section class="gallery" id="gallery" data-scroll-section>
+        <div class="graffiti-decor graffiti-1">GOAT</div>
+        <div class="graffiti-decor graffiti-2">23</div>
+        <div class="graffiti-decor graffiti-3">LEGEND</div>
+
+        <h2 class="gallery-title"><span>THE HALL OF FAME</span></h2>
+
+        <div class="gallery-grid">
+          <div class="gallery-item" data-scroll data-scroll-speed="1">
+            <img
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQo0Y4HS9uwypE-hI0JUTjrsJowfQWRXXwXMRQ5YVEIwHsEXFveGBaV5TCRSzwq830QEN0&usqp=CAU"
+              alt="Michael Jordan Slam Dunk"
+            />
+            <div class="gallery-overlay">
+              <h3 class="gallery-title-small">THE FLY</h3>
+              <p class="gallery-desc">
+                Jordan's high-flying acrobatics changed the game forever.
+              </p>
+            </div>
+          </div>
+
+          <div class="gallery-item" data-scroll data-scroll-speed="1">
+            <img
+              src="https://images2.minutemediacdn.com/image/upload/c_fill,w_1200,ar_1:1,f_auto,q_auto,g_auto/shape/cover/sport/34c4609dc25c233893dc97dcb85d3f11d013715f39036ed9aa1ca27975e84c18.jpg"
+              alt="Michael Jordan Championship"
+            />
+            <div class="gallery-overlay">
+              <h3 class="gallery-title-small">THE LEGEND</h3>
+              <p class="gallery-desc">
+                Six championships. Five MVPs. One unmatched legacy.
+              </p>
+            </div>
+          </div>
+
+          <div class="gallery-item" data-scroll data-scroll-speed="1">
+            <img
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTv_afA0ggocFtfP_2uyI9N_zbfUJc6Ju0bbA&s"
+              alt="Michael Jordan Competitor"
+            />
+            <div class="gallery-overlay">
+              <h3 class="gallery-title-small">THE COMPETITOR</h3>
+              <p class="gallery-desc">
+                His drive to win was unparalleled in sports history.
+              </p>
+            </div>
+          </div>
+
+          <div class="gallery-item" data-scroll data-scroll-speed="1">
+            <img
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3mNWREN1-NBbHrHEvyq6y3YUEEEMfYUO5wA&s"
+              alt="Michael Jordan Champion"
+            />
+            <div class="gallery-overlay">
+              <h3 class="gallery-title-small">THE CHAMPION</h3>
+              <p class="gallery-desc">
+                Winning wasn't just a goal, it was the only option.
+              </p>
+            </div>
+          </div>
+
+          <div class="gallery-item" data-scroll data-scroll-speed="1">
+            <img
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTeSgtX_Y7M-f6fniVDAyws1FnOZDMsUS3fKQ&s"
+              alt="Michael Jordan Clutch"
+            />
+            <div class="gallery-overlay">
+              <h3 class="gallery-title-small">THE CLUTCH</h3>
+              <p class="gallery-desc">
+                When the game was on the line, there was only one choice.
+              </p>
+            </div>
+          </div>
+
+          <div class="gallery-item" data-scroll data-scroll-speed="1">
+            <img
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQHPG99wcUSUvBZqljIQNg8SEjIbajryX8ZTw&s"
+              alt="Michael Jordan Icon"
+            />
+            <div class="gallery-overlay">
+              <h3 class="gallery-title-small">THE ICON</h3>
+              <p class="gallery-desc">
+                More than a player - a global phenomenon that transcended
+                sports.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Greatest Moments Section - Red and White Theme with nike1.mp4 -->
+      <section class="moments" id="moments" data-scroll-section>
+        <div class="jordan-number">23</div>
+
+        <h2 class="moments-title">GREATEST MOMENTS</h2>
+
+        <div class="moments-video-wrapper" data-scroll data-scroll-speed="1">
+          <video class="moments-video" loop muted id="momentsVideo">
+            <source src="nike1.mp4" type="video/mp4" />
+          </video>
+          <div class="moments-video-controls">
+            <button class="moments-control-btn" id="momentsPlayPauseBtn">
+              Play
+            </button>
+            <button class="moments-control-btn" id="momentsMuteBtn">
+              Unmute
+            </button>
+          </div>
+        </div>
+
+        <div class="moments-grid">
+          <div class="moment-item" data-scroll data-scroll-speed="1">
+            <h3 class="moment-title">THE SHOT</h3>
+            <iframe
+              class="moment-frame"
+              src="https://www.youtube.com/embed/greStrG8iVA"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+            ></iframe>
+            <p class="moment-desc">
+              The iconic moment when Michael Jordan elevated over Craig Ehlo to
+              hit the series-winning shot in the first round of the 1989
+              playoffs.
+            </p>
+          </div>
+
+          <div class="moment-item" data-scroll data-scroll-speed="1">
+            <h3 class="moment-title">THE SHRUG</h3>
+            <iframe
+              class="moment-frame"
+              src="https://www.youtube.com/embed/QvgZh53mjOo"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+            ></iframe>
+            <p class="moment-desc">
+              In the 1992 NBA Finals, Jordan hit six 3-pointers in the first
+              half against Portland. After the sixth, he shrugged as if to say,
+              "I don't know what's happening."
+            </p>
+          </div>
+
+          <div class="moment-item" data-scroll data-scroll-speed="1">
+            <h3 class="moment-title">FLU GAME</h3>
+            <iframe
+              class="moment-frame"
+              src="https://www.youtube.com/embed/2os-hfXSUlA"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+            ></iframe>
+            <p class="moment-desc">
+              Game 5 of the 1997 NBA Finals. Battling severe illness, Jordan
+              scored 38 points and hit the game-winning three-pointer against
+              the Utah Jazz.
+            </p>
+          </div>
+
+          <div class="moment-item" data-scroll data-scroll-speed="1">
+            <h3 class="moment-title">THE LAST SHOT</h3>
+            <iframe
+              class="moment-frame"
+              src="https://www.youtube.com/embed/PRCTp57LQro"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+            ></iframe>
+            <p class="moment-desc">
+              Jordan's final shot as a Chicago Bull, hitting the game-winner in
+              Game 6 of the 1998 NBA Finals to secure his sixth championship.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer class="footer" data-scroll-section>
+        <svg
+          class="footer-logo"
+          viewBox="0 0 69.45 25.4"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            fill="white"
+            d="M69.45 12.7C69.45 12.7 66.65 5.85 58.3 0.65C50.55 -4.2 42.65 3.75 35.2 10.2C30.2 14.55 25.55 13.7 22.35 6.8C22.05 6.15 21.1 4.2 19.5 2.25C16.25 -1.7 12.9 -0.45 11.3 0.5C4.75 4.35 0.7 15.7 0 25.4C9.2 17.65 21.85 5.45 26.1 8C30.8 10.8 29.2 15.95 25.65 19.3C23.1 21.7 15.15 28.9 15.15 28.9L30.2 19.3H30.25C30.25 19.3 34.4 16.5 38.55 13.1C42.85 9.6 50.8 1.25 55.35 2.55C58.4 3.45 53 10.95 48.8 13.9C42.25 18.65 34.3 19.5 34.3 19.5C34.3 19.5 43.95 19.9 52.4 15.85C60.7 11.9 68.8 14.25 69.45 12.7Z"
+          />
+        </svg>
+        <p>© 1996 Nike, Inc. All Rights Reserved.</p>
+      </footer>
+    </div>
+
+    <script>
+      // Initialize Locomotive Scroll
+      const scroll = new LocomotiveScroll({
+        el: document.querySelector("[data-scroll-container]"),
+        smooth: true,
+        multiplier: 1,
+        lerp: 0.1,
+      });
+
+      // Initialize GSAP ScrollTrigger
+      gsap.registerPlugin(ScrollTrigger);
+
+      // Video Controls
+      document.addEventListener("DOMContentLoaded", function () {
+        // Hero Video Controls
+        const heroVideo = document.getElementById("heroVideo");
+        const playPauseBtn = document.getElementById("playPauseBtn");
+        const muteBtn = document.getElementById("muteBtn");
+
+        // Initialize video with sound
+        heroVideo.muted = false;
+
+        // Play/Pause button
+        playPauseBtn.addEventListener("click", function () {
+          if (heroVideo.paused) {
+            heroVideo.play();
+            playPauseBtn.textContent = "Pause";
+          } else {
+            heroVideo.pause();
+            playPauseBtn.textContent = "Play";
+          }
+        });
+
+        // Mute button
+        muteBtn.addEventListener("click", function () {
+          heroVideo.muted = !heroVideo.muted;
+          muteBtn.textContent = heroVideo.muted ? "Unmute" : "Mute";
+        });
+
+        // Moments Video Controls
+        const momentsVideo = document.getElementById("momentsVideo");
+        const momentsPlayPauseBtn = document.getElementById(
+          "momentsPlayPauseBtn"
+        );
+        const momentsMuteBtn = document.getElementById("momentsMuteBtn");
+
+        // Initialize moments video - don't autoplay and keep muted
+        momentsVideo.muted = true;
+
+        // Play/Pause button
+        momentsPlayPauseBtn.addEventListener("click", function () {
+          if (momentsVideo.paused) {
+            momentsVideo.play();
+            momentsPlayPauseBtn.textContent = "Pause";
+          } else {
+            momentsVideo.pause();
+            momentsPlayPauseBtn.textContent = "Play";
+          }
+        });
+
+        // Mute button
+        momentsMuteBtn.addEventListener("click", function () {
+          momentsVideo.muted = !momentsVideo.muted;
+          momentsMuteBtn.textContent = momentsVideo.muted ? "Unmute" : "Mute";
+        });
+      });
+
+      // Animations
+      gsap.from(".hero-title", {
+        opacity: 0,
+        y: 50,
+        duration: 1.5,
+        delay: 0.5,
+      });
+
+      gsap.from(".hero-subtitle", {
+        opacity: 0,
+        y: 30,
+        duration: 1.5,
+        delay: 0.8,
+      });
+
+      // Handle ScrollTrigger animations
+      ScrollTrigger.defaults({
+        scroller: ".scroll-container",
+      });
+
+      // Gallery items animation
+      gsap.utils.toArray(".gallery-item").forEach((item) => {
+        gsap.from(item, {
+          scrollTrigger: {
+            trigger: item,
+            start: "top bottom",
+            end: "top center",
+            scrub: 1,
+          },
+          y: 50,
+          opacity: 0,
+        });
+      });
+
+      // Moments items animation
+      gsap.utils.toArray(".moment-item").forEach((item) => {
+        gsap.from(item, {
+          scrollTrigger: {
+            trigger: item,
+            start: "top bottom",
+            end: "top center",
+            scrub: 1,
+          },
+          x: -50,
+          opacity: 0,
+        });
+      });
+
+      // Quote animation
+      gsap.utils.toArray(".legacy-quote").forEach((item) => {
+        gsap.from(item, {
+          scrollTrigger: {
+            trigger: item,
+            start: "top bottom",
+            end: "top center",
+            scrub: 1,
+          },
+          y: 30,
+          opacity: 0,
+        });
+      });
+
+      // Update ScrollTrigger when Locomotive Scroll updates
+      scroll.on("scroll", ScrollTrigger.update);
+
+      // Tell ScrollTrigger to use these proxy methods for the ".scroll-container" element
+      ScrollTrigger.scrollerProxy(".scroll-container", {
+        scrollTop(value) {
+          return arguments.length
+            ? scroll.scrollTo(value, 0, 0)
+            : scroll.scroll.instance.scroll.y;
+        },
+        getBoundingClientRect() {
+          return {
+            top: 0,
+            left: 0,
+            width: window.innerWidth,
+            height: window.innerHeight,
+          };
+        },
+      });
+
+      // When window resizes, refresh ScrollTrigger and Locomotive Scroll
+      ScrollTrigger.addEventListener("refresh", () => scroll.update());
+      ScrollTrigger.refresh();
+    </script>
+  </body>
+</html>
